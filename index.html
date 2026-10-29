@@ -1,0 +1,105 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Car Run Installer</title>
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: #13151a;
+    color: #f5f5f5;
+    font-family: "Segoe UI", sans-serif;
+}
+main {
+    width: min(380px, 85%);
+    padding: 30px;
+    border: 1px solid #30343d;
+    border-radius: 16px;
+    background: #1c1f26;
+}
+p { color: #aeb4c0; line-height: 1.6; }
+button {
+    width: 100%;
+    padding: 13px;
+    border: 0;
+    border-radius: 8px;
+    background: #59c059;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:hover { background: #72d472; }
+</style>
+</head>
+<body>
+<main>
+    <h1>Car Run Installer</h1>
+    <p>Install Car Run and create a startup shortcut so it
+       launches automatically when you sign in to Windows.</p>
+    <button onclick="downloadInstaller()">Download Installer</button>
+</main>
+
+<script>
+function downloadInstaller() {
+    const bat = String.raw`@echo off
+setlocal
+title Car Run Installer
+
+set "SOURCE=%~dp0spyin-client.exe"
+set "DEST=%APPDATA%\CarRun"
+set "GAME=%APPDATA%\CarRun\spyin-client.exe"
+set "STARTUP=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+
+if not exist "%SOURCE%" (
+    echo ERROR: spyin-client.exe must be beside this installer.
+    pause
+    exit /b 1
+)
+
+if not exist "%DEST%" mkdir "%DEST%"
+if errorlevel 1 goto error
+
+if not exist "%STARTUP%" mkdir "%STARTUP%"
+if errorlevel 1 goto error
+
+copy /Y "%SOURCE%" "%GAME%" >nul
+if errorlevel 1 goto error
+
+powershell.exe -NoProfile -Command "$w=New-Object -ComObject WScript.Shell; $s=$w.CreateShortcut((Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\Car Run.lnk')); $s.TargetPath=Join-Path $env:APPDATA 'CarRun\car-run.exe'; $s.WorkingDirectory=Join-Path $env:APPDATA 'CarRun'; $s.Description='Car Run'; $s.Save()"
+
+if errorlevel 1 goto error
+
+echo.
+echo Car Run installed successfully!
+echo Installed EXE: %GAME%
+echo Startup shortcut: %STARTUP%\Car Run.lnk
+echo.
+echo The game will launch at your next Windows sign-in.
+pause
+exit /b 0
+
+:error
+echo.
+echo Installation failed.
+pause
+exit /b 1
+`;
+    const blob = new Blob([bat], {
+        type: "text/plain;charset=utf-8"
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Install-CarRun.bat";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+</script>
+</body>
+</html>
+```
