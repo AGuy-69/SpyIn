@@ -1,0 +1,12 @@
+# Ignore all Python source code
+*.py
+*.pyc
+*.spec
+__pycache__/
+
+# Ignore build junk and secrets
+build/
+spyin-autoupdate.exe
+.env
+serviceAccountKey.json
+*.ps1
